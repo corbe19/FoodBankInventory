@@ -1,5 +1,6 @@
 ﻿using FoodBankInventory;
 using System;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Serialization;
 
@@ -26,7 +27,6 @@ internal class Program
             Console.Write("Enter your choice: ");
             string input = Console.ReadLine();
 
-            // Validate input and parse it into an integer
             if (int.TryParse(input, out choice))
             {
                 switch (choice)
@@ -57,14 +57,25 @@ internal class Program
 
     public static void AddFoodItem()
     {
+        Console.WriteLine(); //readability
+
         Console.WriteLine("Enter the name of the food item: ");
-        string name = Console.ReadLine();
+        string name = Console.ReadLine().ToLower();
 
         Console.WriteLine("Enter the category of the food item: ");
         string category = Console.ReadLine();
 
-        Console.WriteLine("Enter the quantity of the food item: ");
-        int quantity = int.Parse(Console.ReadLine());
+        //negative number error handling
+        int quantity = -1;
+        while (quantity < 0)
+        {
+            Console.WriteLine("Enter the quantity of the food item (must be 0 or greater): ");
+            if (int.TryParse(Console.ReadLine(), out quantity) && quantity >= 0)
+            {
+                break;
+            }
+            Console.WriteLine("Invalid input. Please enter a non-negative integer.");
+        }
 
         Console.WriteLine("Enter the expiration date of the food item: ");
         string expirationDate = Console.ReadLine();
@@ -75,8 +86,10 @@ internal class Program
 
     public static void RemoveFoodItem()
     {
+        Console.WriteLine(); //readability
+
         Console.WriteLine("Enter the name of the food item you would like to remove: ");
-        string name = Console.ReadLine();
+        string name = Console.ReadLine().ToLower();
         for (int i = 0; i < foodList.Count; i++)
         {
             if (foodList[i].name == name)
@@ -87,6 +100,20 @@ internal class Program
             }
         }
         Console.WriteLine("Food item not found.");
+    }
+
+    public static void PrintFoodList() {
+
+        Console.WriteLine(); //Im just doing this to make a new line for readability
+
+        if (foodList.Count == 0) { 
+            Console.WriteLine("Inventory Empty");
+        }
+
+        for (int i = 0; i < foodList.Count; i++)
+        {
+            Console.WriteLine(foodList[i].ToString());
+        }
     }
 
 }
